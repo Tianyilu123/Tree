@@ -1,0 +1,18 @@
+
+class Solution {
+    public boolean containsNearbyAlmostDuplicate(int[] nums, int k, int t) {
+        TreeSet<Long> set = new TreeSet<>();
+        for(int i=0; i<nums.length; i++) {
+            if(i > k) {
+                set.remove(Long.valueOf(nums[i-k-1]));
+            }
+            long upperBound = (long)nums[i] + t;
+            long lowerBound = (long)nums[i] - t;
+            Long low = set.floor(upperBound);
+            if(low != null && low >= lowerBound)
+                return true;
+            set.add(Long.valueOf(nums[i]));
+        }
+        return false;
+    }
+}
