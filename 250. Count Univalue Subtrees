@@ -1,0 +1,23 @@
+
+class Solution {
+    private int count = 0;
+    
+    public int countUnivalSubtrees(TreeNode root) {
+        isUnivalue(root, 9999);
+        return count;
+    }
+    
+    private boolean isUnivalue(TreeNode root, int value) {
+        if(root == null) return true;
+        
+        boolean left = isUnivalue(root.left, root.val);
+        boolean right = isUnivalue(root.right, root.val);
+        
+        boolean condition = left && right;
+        if(!condition) {
+            return false;
+        }
+        count++;
+        return root.val == value;
+    }
+}
