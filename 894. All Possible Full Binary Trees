@@ -1,0 +1,24 @@
+
+class Solution {
+    public List<TreeNode> allPossibleFBT(int N) {
+        List<TreeNode> res = new ArrayList<>();
+        if(N==1) {
+            res.add(new TreeNode(0));
+            return res;
+        }
+        for(int i=1; i<=N-2; i++) {
+            List<TreeNode> leftList = allPossibleFBT(i);
+            List<TreeNode> rightList = allPossibleFBT(N-i-1);
+            
+            for(TreeNode L : leftList) {
+                for(TreeNode R : rightList) {
+                    TreeNode cur = new TreeNode(0);
+                    cur.left = L;
+                    cur.right = R;
+                    res.add(cur);
+                }
+            }
+        }
+        return res;
+    }
+}
