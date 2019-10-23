@@ -1,0 +1,30 @@
+
+class Solution {
+    public int countNodes(TreeNode root) {
+        if(root == null) return 0;
+        int leftHeight = height(root.left);
+        int rightHeight = height(root.right);
+        int count = 1;
+        
+        if(leftHeight > rightHeight) {
+            count += (1<<rightHeight) - 1;
+            return count += countNodes(root.left);
+            
+        }
+        else if(leftHeight == rightHeight) {
+            count += (1<<leftHeight) - 1;
+            return count += countNodes(root.right);
+        }
+        else 
+            return -1;
+    } 
+    
+    private int height(TreeNode root) {
+        int height = 0;
+        while(root != null) {
+            height++;
+            root = root.left;
+        }
+        return height;
+    }
+}
