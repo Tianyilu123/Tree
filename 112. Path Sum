@@ -1,0 +1,18 @@
+
+class Solution {
+    public boolean hasPathSum(TreeNode root, int sum) {
+        return search(root, 0, sum);
+    }
+    
+    private boolean search(TreeNode root, int cur, int sum) {
+        if(root == null) return false;
+        
+        int val = cur + root.val;
+        if(root.left == null && root.right == null) {
+            if(val == sum) return true;
+            else return false;
+        }
+        
+        return search(root.left, val, sum) || search(root.right, val, sum);
+    }
+}
