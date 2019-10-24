@@ -14,3 +14,7 @@ class Solution {
         return root;
     }
 }
+
+
+// time: O(n)
+// space: O(logn) or O(n) 
