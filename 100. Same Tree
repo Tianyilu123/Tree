@@ -10,3 +10,6 @@ class Solution {
             isSameTree(p.right, q.right);
     }
 }
+
+// time: O(n)
+// space: O(n)
