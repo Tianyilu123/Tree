@@ -16,3 +16,7 @@ class Solution {
         return search(root.left, val, sum) || search(root.right, val, sum);
     }
 }
+
+
+// time: O(n)
+// space: O(n)
