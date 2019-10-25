@@ -24,3 +24,7 @@ class Solution {
         return sb.toString();
     } 
 }
+
+
+// time: O(nlogn)
+//space: O(n)
