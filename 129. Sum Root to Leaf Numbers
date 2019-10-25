@@ -17,3 +17,7 @@ class Solution {
         helper(root.right, cur);
     }
 }
+
+
+// time: O(n)
+// space: O(h)
