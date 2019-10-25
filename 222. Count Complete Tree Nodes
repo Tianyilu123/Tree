@@ -28,3 +28,7 @@ class Solution {
         return height;
     }
 }
+
+
+// time: O(logn * logn)
+//space: O(n)
