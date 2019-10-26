@@ -1,82 +1,51 @@
+// BFS + DFS
 
 class Solution {
-    private static class Result {
-        public int val;
-        public boolean containsTarget;
-        public TreeNode leaf;
-        
-        public Result(int val, boolean containsTarget, TreeNode leaf) {
-            this.val = val;
-            this.containsTarget = containsTarget;
-            this.leaf = leaf;
-        }
-    }
-    
-    private int min = Integer.MAX_VALUE;
-    private TreeNode res = null;
     
     public int findClosestLeaf(TreeNode root, int k) {
-        dfs(root, k);
-        if(res == null)
-            throw new IllegalArgumentException();
-        return res.val;
-    }
-    
-    private Result dfs(TreeNode root, int target) {
-        if(root == null) return null;
-        Result left = dfs(root.left, target);
-        Result right = dfs(root.right, target);
+        Map<TreeNode, TreeNode> backMap = new HashMap<>();   // store all edges that trace node back to its parent
+        Queue<TreeNode> queue = new LinkedList<>();          // the queue used in BFS
+        Set<TreeNode> visited = new HashSet<>();             // store all visited nodes
         
-        if(left == null && right == null) {
-            if(root.val == target) {
-                tryUpdate(0, root);
+        // DFS: search for node whoes val == k
+        TreeNode kNode = DFS(root, k, backMap);
+        queue.add(kNode);
+        visited.add(kNode);
+        
+        // BFS: find the shortest path
+        while(!queue.isEmpty()) {
+            TreeNode curr = queue.poll();
+            if(curr.left == null && curr.right == null) {
+                return curr.val;
             }
-            return new Result(1, root.val == target, root);
-        }
-        else if(right == null) {
-            return handleOnlyOneChild(root, left, target);
-        }
-        else if(left == null) {
-            return handleOnlyOneChild(root, right, target);
-        }
-        else {
-            if(root.val == target) {
-                tryUpdate(
-                left.val < right.val ? left.val : right.val,
-                left.val < right.val ? left.leaf : right.leaf);
-                
-                return new Result(0, true, null);
+            if(curr.left != null && visited.add(curr.left)) {
+                queue.add(curr.left);
             }
-            else if(left.containsTarget) {
-                tryUpdate(left.val + 1 + right.val, right.leaf);
-                return new Result(left.val + 1, true, null);
+            if(curr.right != null && visited.add(curr.right)) {
+                queue.add(curr.right);
             }
-            else if(right.containsTarget) {
-                tryUpdate(left.val + 1 + right.val, left.leaf);
-                return new Result(right.val + 1, true, null);
-            }
-            else {
-                return new Result(Math.min(left.val, right.val)+1, false,
-                                 left.val < right.val ? left.leaf : right.leaf);
+            if(backMap.containsKey(curr) && visited.add(backMap.get(curr))) {  // go alone the back edge
+                queue.add(backMap.get(curr));
             }
         }
+        return -1; // never hit
     }
     
-    private Result handleOnlyOneChild(TreeNode root, Result child, int target) {
-        int d = 0;
-        TreeNode node = child.leaf;
-        if(root.val == target) {
-            tryUpdate(child.val + 1, node);
-        } else {
-            d = child.val + 1;
+    private TreeNode DFS(TreeNode root, int k, Map<TreeNode, TreeNode> backMap) {
+        if(root.val == k) {
+            return root;
         }
-        return new Result(d, root.val == target || child.containsTarget, node);
+        if(root.left != null) {
+            backMap.put(root.left, root);        // add back edge
+            TreeNode left = DFS(root.left, k, backMap);
+            if(left != null) return left;
+        }
+        if(root.right != null) {
+            backMap.put(root.right, root);       // add back edge
+            TreeNode right = DFS(root.right, k, backMap);
+            if(right != null) return right;
+        }
+        return null;
     }
     
-    private void tryUpdate(int d, TreeNode node) {
-        if(d < min) {
-            min = d;
-            res = node;
-        }
-    }
 }
