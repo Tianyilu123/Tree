@@ -1,0 +1,50 @@
+public class Codec {
+
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        if(root == null) return "";
+        Queue<TreeNode> queue = new LinkedList<>();
+        StringBuilder res = new StringBuilder();
+        queue.offer(root);
+        while(!queue.isEmpty()) {
+            TreeNode cur = queue.poll();
+            if(cur == null) {
+                res.append("null");
+            }
+            else {
+                res.append(cur.val);
+                queue.offer(cur.left);
+                queue.offer(cur.right);
+            }
+            res.append(",");
+        }
+        res.deleteCharAt(res.length()-1);
+        return res.toString();
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        if(data == "") return null;
+        String[] str = data.split(",");
+        Queue<TreeNode> queue = new LinkedList<>();
+        TreeNode root = new TreeNode(Integer.parseInt(str[0]));
+        queue.offer(root);
+        for(int i=1; i<str.length; i++) {
+            TreeNode parent = queue.poll();
+            if(!str[i].equals("null")) {
+               TreeNode left = new TreeNode(Integer.parseInt(str[i]));
+                parent.left = left;
+                queue.offer(left); 
+            }
+            if(!str[++i].equals("null")) {
+               TreeNode right = new TreeNode(Integer.parseInt(str[i]));
+                parent.right = right;
+                queue.offer(right); 
+            }
+        }
+        return root;
+    }
+}
+
+// time: O(n)
+// space:O(n)
