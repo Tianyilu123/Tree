@@ -1,1 +1,60 @@
 
+class Solution {
+    PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+    
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        if (nums.length == 0) return new double[]{};
+        if (k > nums.length) k = nums.length;
+        
+        if (k == 1) {
+            double[] res = new double[nums.length];
+            for (int i = 0; i < nums.length; i++) {
+                res[i] = (double)nums[i];
+            }
+            return res;
+        }
+        
+        //base case
+
+        int[] cur = new int[k];
+        for (int i = 0; i < k; i++) {
+            cur[i] = nums[i];
+        }
+        Arrays.sort(cur);
+        for (int i = 0; i < k / 2; i++) {
+            maxHeap.add(cur[i]);
+        }
+        for (int i = k / 2; i < k; i++) {
+            minHeap.add(cur[i]);
+        }
+        double[] res = new double[nums.length - k + 1];
+        if (maxHeap.size() == minHeap.size()) {
+                res[0] = ((double)maxHeap.peek() + (double)minHeap.peek()) / 2.0;
+        } else {
+                res[0] = (double)minHeap.peek();
+        }
+        //general case
+        for (int i = k; i < nums.length; i++) {
+            minHeap.add(nums[i]);
+            if (minHeap.remove(nums[i - k])) {
+                if (minHeap.peek() < maxHeap.peek()) {
+                    minHeap.add(maxHeap.remove());
+                    maxHeap.add(minHeap.remove());
+                }
+            } else {
+                maxHeap.remove(nums[i - k]);
+                maxHeap.add(minHeap.remove());
+            }
+            if (maxHeap.size() == minHeap.size()) {
+                res[i - k + 1] = ((double)maxHeap.peek() + (double)minHeap.peek()) / 2.0;
+            } else {
+                res[i - k + 1] = (double)minHeap.peek();
+            }
+        }
+        return res;
+    }
+}
+
+// time: O(nk)
+//spacce: O(k)
