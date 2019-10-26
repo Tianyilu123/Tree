@@ -1,19 +1,16 @@
 
 class Solution {
     public int numTrees(int n) {
-        int[] m = new int[n+1];
-        m[0] = 1;
-        for(int len=1; len<=n; len++) {
-            int count = 0;
-            for(int i=1; i<=len; i++) {
-                count += m[i-1] * m[len-i];
+        int[] res = new int[n+1];
+        res[0] = 1;
+        for(int i=1; i<=n; i++) {
+            for(int j=0; j<i; j++) {
+                res[i] += res[j]*res[i-j-1];
             }
-            m[len] = count;
         }
-        return m[n];
+        return res[n];
     }
 }
-
 
 time: O(n)
 space: O(n)
