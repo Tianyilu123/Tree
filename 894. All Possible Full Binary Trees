@@ -22,3 +22,6 @@ class Solution {
         return res;
     }
 }
+
+time: O(2^n)
+space: O(2^n)
