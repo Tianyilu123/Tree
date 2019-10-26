@@ -1,23 +1,30 @@
 
 class Solution {
-    private int count = 0;
-    
+    int res;
     public int countUnivalSubtrees(TreeNode root) {
-        isUnivalue(root, 9999);
-        return count;
+        res = 0;
+        helper(root);
+        return res;
     }
     
-    private boolean isUnivalue(TreeNode root, int value) {
+    private boolean helper(TreeNode root) {
         if(root == null) return true;
         
-        boolean left = isUnivalue(root.left, root.val);
-        boolean right = isUnivalue(root.right, root.val);
+        boolean left = helper(root.left);
+        boolean right = helper(root.right);
         
-        boolean condition = left && right;
-        if(!condition) {
-            return false;
+        if(left && right) {
+            if(root.left != null && root.val != root.left.val)
+                return false;
+            if(root.right != null && root.val != root.right.val)
+                return false;
+            res++;
+            return true;
         }
-        count++;
-        return root.val == value;
+        return false;
     }
 }
+
+
+// time: O(n);
+// space: O(n);
