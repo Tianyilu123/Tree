@@ -13,3 +13,7 @@ class Solution {
         return m[n];
     }
 }
+
+
+time: O(n)
+space: O(n)
