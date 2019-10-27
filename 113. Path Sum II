@@ -2,32 +2,25 @@
 class Solution {
     public List<List<Integer>> pathSum(TreeNode root, int sum) {
         List<List<Integer>> res = new ArrayList<>();
-        List<Integer> one = new ArrayList<>();
-        search(res, one, root, 0, sum);
+        if(root == null) return res;
+        helper(res, new ArrayList<>(), root, sum);
         return res;
     }
     
-    private void search(List<List<Integer>> res, List<Integer> one, 
-                        TreeNode root, int cur, int sum) {
+    private void helper(List<List<Integer>> res, List<Integer> list, TreeNode root, int sum) {
         if(root == null) return;
-        int val = root.val + cur;
+        list.add(root.val);
         if(root.left == null && root.right == null) {
-            if(val == sum) {
-                List<Integer> tmp = new ArrayList<>(one);
-                tmp.add(root.val);
-                res.add(tmp);
-                return;
-            } else {
-                return;
+            if(sum == root.val) {
+                res.add(new ArrayList<>(list));
             }
         }
-        one.add(root.val);
-        search(res, one, root.left, val, sum);
-        search(res, one, root.right, val, sum);
-        one.remove(one.size()-1);
+        
+        helper(res, list, root.left, sum - root.val);
+        helper(res, list, root.right, sum - root.val);
+        list.remove(list.size()-1);
     }
 }
-
 
 // time: O(n)
 // space: O(h)
