@@ -1,59 +1,97 @@
+// method 1:
 
 class Solution {
     public List<Integer> closestKValues(TreeNode root, double target, int k) {
-        List<Integer> res = new ArrayList<>();
-        Stack<TreeNode> left = new Stack<>();
-        Stack<TreeNode> right = new Stack<>();
-        TreeNode cur = root;
-        
-        while(cur != null) {
-            if(cur.val < target) {
-                left.push(cur);
-                cur = cur.right;
-            } else {
-                right.push(cur);
-                cur = cur.left;
-            }
+        LinkedList<Integer> res = new LinkedList<>();
+        helper(res, root, target, k);
+        return res;
+    }
+    
+    private void helper(LinkedList<Integer> res, TreeNode root, double target, int k) {
+        if(root == null) return;
+        helper(res, root.left, target, k);
+        if(res.size() == k) {
+            if(Math.abs(target - root.val) < Math.abs(target-res.peekFirst())) {
+                res.removeFirst();
+            } else return;
         }
-        
-        while(k-- >0) {
-            if(!left.isEmpty() && !right.isEmpty()) {
-                if(Math.abs((double) left.peek().val - target) < 
-                   Math.abs((double) right.peek().val - target)) {
-                    res.add(getNextLeft(left));
+        res.add(root.val);
+        helper(res, root.right, target, k);
+    }
+}
+
+// time: O(n), space: O(k)
+
+
+// method 2: 
+class Solution {
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        List<Integer> res = new ArrayList<>();
+        Stack<TreeNode> pred = new Stack<>();
+        Stack<TreeNode> succ = new Stack<>();
+        getPred(root, target, pred);
+        getSucc(root, target, succ);
+        if(!pred.isEmpty() && !succ.isEmpty() && succ.peek().val == pred.peek().val) {
+            helper(pred, false);
+        }
+        while(k-- > 0) {
+            if(succ.isEmpty()) res.add(helper(pred, false));
+            else if(pred.isEmpty()) res.add(helper(succ, true));
+            else {
+                double succDiff = Math.abs((double)succ.peek().val - target);
+                double predDiff = Math.abs((double)pred.peek().val - target);
+                if(succDiff < predDiff) {
+                    res.add(helper(succ, true));
                 } else {
-                    res.add(getNextRight(right));
+                    res.add(helper(pred, false));
                 }
-            } else if(!left.isEmpty()) {
-                res.add(getNextLeft(left));
-            } else if(!right.isEmpty()) {
-                res.add(getNextRight(right));
-            } else {
-                throw new IllegalArgumentException("K is too big");
             }
         }
         return res;
     }
     
-    private int getNextLeft(Stack<TreeNode>left) {
-        TreeNode top = left.pop();
-        int ret = top.val;
-        TreeNode cur = top.left;
-        while(cur != null) {
-            left.push(cur);
-            cur = cur.right;
+    private void getPred(TreeNode root, double target, Stack<TreeNode> pred) {
+        while(root != null) {
+            if(root.val == target) {
+                pred.push(root);
+                break;
+            } else if(root.val < target) {
+                pred.push(root);
+                root = root.right;
+            } else {
+                root = root.left;
+            }
         }
-        return ret;
     }
     
-    private int getNextRight(Stack<TreeNode> right) {
-        TreeNode top = right.pop();
-        int ret = top.val;
-        TreeNode cur = top.right;
-        while(cur != null) {
-            right.push(cur);
-            cur = cur.left;
+    private void getSucc(TreeNode root, double target, Stack<TreeNode> succ) {
+        while(root != null) {
+            if(root.val == target) {
+                succ.push(root);
+                break;
+            } else if(root.val > target) {
+                succ.push(root);
+                root = root.left;
+            } else {
+                root = root.right;
+            }
         }
-        return ret;
+    }
+    
+    private int helper(Stack<TreeNode> stack, boolean isSucc) {
+        TreeNode cur = stack.pop();
+        int res = cur.val;
+        if(isSucc) cur = cur.right;
+        else cur = cur.left;
+        
+        while(cur != null) {
+            stack.push(cur);
+            if(isSucc) cur = cur.left;
+            else cur = cur.right;
+        }
+        return res;
     }
 }
+
+// time: O(logn)
+// space; O(k)
