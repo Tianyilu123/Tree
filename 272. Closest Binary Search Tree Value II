@@ -93,5 +93,5 @@ class Solution {
     }
 }
 
-// time: O(logn)
+// time: O(k*logn)
 // space; O(k)
