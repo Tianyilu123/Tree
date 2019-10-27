@@ -17,6 +17,9 @@ class Solution {
     }
 }
 
+time complexity is O(nlog(k)).
+
+
 
 // method 2: bucketsort
 
