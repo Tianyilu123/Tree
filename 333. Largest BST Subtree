@@ -1,41 +1,36 @@
 
 class Solution {
-    private int maxSize = 0;
-    
+    int res = 0;
     public int largestBSTSubtree(TreeNode root) {
+        if(root == null) return 0;
         helper(root);
-        return maxSize;
+        return res;
     }
     
-    private class Result {
-        public int min, max, size;
-        
-        public Result(int min, int max, int size) {
-            this.min = min;
-            this.max = max;
-            this.size = size;
-        } 
-    }
-    
-    private Result helper(TreeNode root) {
-        if(root == null) return new Result(0,0,0);
-        
-        Result left = helper(root.left);
-        Result right = helper(root.right);
-        
-        if(left == null || right == null) return null;
-        
-        int size = 1;
-        if((left.size == 0 || left.max < root.val) && 
-            (right.size == 0 || right.min > root.val)) {
-            size = left.size + 1 + right.size;
-            maxSize = Math.max(maxSize, size);
-        } else {
-            return null;
+    private searchNode helper(TreeNode root) {
+        if(root == null)
+            return new searchNode(0, Integer.MAX_VALUE, Integer.MIN_VALUE);
+        searchNode left = helper(root.left);
+        searchNode right = helper(root.right);
+        if(left.size == -1 || right.size == -1 || root.val <= left.upper
+                                                    || root.val >= right.lower) {
+            return new searchNode(-1, 0, 0);
         }
-        int min = (left.size > 0) ? left.min : root.val;
-        int max = (right.size > 0) ? right.min : root.val;
         
-        return new Result(min, max, size);
+        int size = left.size + right.size + 1;
+        res = Math.max(size, res);
+        return new searchNode(size, Math.min(left.lower, root.val), Math.max(right.upper, root.val));
+    }
+    
+    class searchNode {
+        int size, lower, upper;
+        searchNode(int size, int lower, int upper) {
+            this.size = size;
+            this.lower = lower;
+            this.upper = upper;
+        }
     }
 }
+
+// time: O(n);
+// space: O(n);
