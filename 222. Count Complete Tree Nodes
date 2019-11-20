@@ -20,3 +20,26 @@ class Solution {
 
 // time: O(logn * logn)
 //space: O(n)
+
+
+// method 2:
+
+class Solution {
+    public int countNodes(TreeNode root) {
+        if(root == null) return 0;
+        int left = helper(root, true);
+        int right = helper(root, false);
+        if(left == right)
+            return (1<<left)-1;
+        else
+            return 1+countNodes(root.left)+countNodes(root.right);
+    }
+    
+    private int helper(TreeNode root, boolean isLeft) {
+        if(root == null) return 0;
+        if(isLeft) {
+            return helper(root.left, isLeft)+1;
+        } else
+            return helper(root.right, isLeft)+1;
+    }
+}
