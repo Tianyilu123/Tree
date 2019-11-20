@@ -1,0 +1,23 @@
+class Solution {
+    int min;
+    Integer prev = null;
+    public int minDiffInBST(TreeNode root) {
+        if(root == null) return 0;
+        min = Integer.MAX_VALUE;
+        helper(root);
+        return min;
+    }
+    
+    private void helper(TreeNode root) {
+        if(root == null) return;
+        helper(root.left);
+        if(prev != null) {
+            min = Math.min(Math.abs(root.val-prev), min);
+        }
+        prev = root.val;
+        helper(root.right);
+    }
+}
+
+// time: O(n)
+// space: O(n)
