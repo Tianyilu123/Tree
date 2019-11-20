@@ -1,7 +1,5 @@
 
 
-// method 2:
-
 class Solution {
     public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
         if(root == null) return null;
