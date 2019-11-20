@@ -8,12 +8,13 @@ class Solution {
     
     private boolean helper(TreeNode root, Integer[] prev) {
         if(root == null) return true;
-        if(!helper(root.left, prev)) return false;
-        if(prev[0] != null && root.val <= prev[0]) {
+        
+        boolean left = helper(root.left, prev);
+        if(prev[0] != null && root.val <= prev[0])
             return false;
-        }
         prev[0] = root.val;
-        return helper(root.right, prev);
+        boolean right = helper(root.right, prev);
+        return left && right;
     }
 }
 
