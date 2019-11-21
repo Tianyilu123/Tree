@@ -8,7 +8,7 @@ class Solution {
             if (N == 1) {
                 ans.add(new TreeNode(0));
             } else if (N % 2 == 1) {
-                for (int x = 0; x < N; ++x) {
+                for (int x = 1; x < N; x++) {
                     int y = N - 1 - x;
                     for (TreeNode left: allPossibleFBT(x))
                         for (TreeNode right: allPossibleFBT(y)) {
