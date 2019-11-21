@@ -1,24 +1,27 @@
 class Solution {
     public boolean isScramble(String s1, String s2) {
-        if(s1 == null || s2 ==  null) return false;
-        if(s1.equals(s2)) return true;
+        if(s1 ==null || s2 == null || s1.length() != s2.length()) return false;
+        if(s1.length() == 1 && s1.equals(s2)) return true;
+        if(s1.length() == 1 && !s1.equals(s2)) return false;
         
-        int[] letters = new int[26];
-        int len = s1.length();
-        for(int i=0; i<len; i++) {
-            letters[s1.charAt(i)-'a']++;
-            letters[s2.charAt(i)-'a']--;
-        }
-        for(int i=0; i<26; i++) {
-            if(letters[i] != 0) return false;
-        }
-        for(int i=1; i<len; i++) {
-            if(isScramble(s1.substring(0,i), s2.substring(0,i))
-                         && isScramble(s1.substring(i), s2.substring(i)))
+        char[] chs1 = s1.toCharArray();
+        char[] chs2 = s2.toCharArray();
+        Arrays.sort(chs1);
+        Arrays.sort(chs2);
+        
+        String str1 = new String(chs1);
+        String str2 = new String(chs2);
+        if(!str1.equals(str2)) return false;
+        
+        for(int len=1; len<s1.length(); len++) {
+            String s1Left = s1.substring(0, len);
+            String s1Right = s1.substring(len);
+            int s2Len = s2.length();
+            if((isScramble(s1Left, s2.substring(0, len)) && 
+               isScramble(s1Right, s2.substring(len))))
                 return true;
-            
-            if(isScramble(s1.substring(0,i), s2.substring(len-i))
-                         && isScramble(s1.substring(i), s2.substring(0, len-i)))
+            if((isScramble(s1Left, s2.substring(s2Len-len))) && 
+                 (isScramble(s1Right, s2.substring(0, s2Len-len))))
                 return true;
         }
         return false;
